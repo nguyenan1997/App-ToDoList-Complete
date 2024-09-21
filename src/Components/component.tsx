@@ -12,7 +12,6 @@ interface listProps {
 function ListRender(): JSX.Element {
   const [lists, setLists] = useState<Array<listProps>>([]);
   const [inputValue, setInputValue] = useState<string>("");
-  const [countDownTime, setCountDownTime] = useState<{minutes: number, seconds: number}>({ minutes: 0, seconds: 0 });
   const [showTime, setShowTime] = useState<boolean>(false);
 
   const changeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -53,19 +52,39 @@ function ListRender(): JSX.Element {
     setShowTime((pre) => !pre);
   };
 
-  const updateMinutes = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setCountDownTime({...countDownTime, minutes: parseInt(e.target.value) || 0}) 
-  }
+  const updateMinutes = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
+    setLists((preList) =>
+      preList.map((task, i) => {
+        if (i === index) {
+          return {
+            ...task,
+            time: { minutes: parseInt(e.target.value), seconds: task.time.seconds },
+          };
+        }
+        return task;
+      })
+    );
+  };
 
-  const updateSeconds = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setCountDownTime({...countDownTime, seconds:  parseInt(e.target.value) || 0})
+  const updateSeconds = (e: React.ChangeEvent<HTMLInputElement>,index:number) => {
+    setLists((preList) =>
+      preList.map((task, i) => {
+        if (i === index) {
+          return {
+            ...task,
+            time: { minutes: task.time.minutes, seconds: parseInt(e.target.value) },
+          };
+        }
+        return task;
+      })
+    );
   }
 
   const setTime = (index: number) => {
     const intervalID = setInterval(() => {
       setLists((prelists: any) => {
         const updatedLists = [...prelists];
-        let {minutes, seconds} = updatedLists[index].timeLimits;
+        let {minutes, seconds} = updatedLists[index].time;
 
         if(seconds > 0){
           seconds--;
@@ -81,6 +100,7 @@ function ListRender(): JSX.Element {
         return updatedLists
       })
     }, 1000);
+
     setShowTime(pre => !pre);
   };
  
@@ -166,9 +186,9 @@ function ListRender(): JSX.Element {
               >
                 <h1>Nhập thời gian</h1>
                 <div>
-                  <input type="number" placeholder="minutes" onChange={updateMinutes} className="input-ms" />
+                  <input type="number" placeholder="minutes" onChange={(e) => updateMinutes(e,index)} className="input-ms" />
                   <span style={{color:"white"}}>:</span>
-                  <input type="number" placeholder="seconds" maxLength={2} onChange={updateSeconds} className="input-ms"/>
+                  <input type="number" placeholder="seconds" maxLength={2} onChange={(e) => updateSeconds(e,index)} className="input-ms"/>
                 </div>
                 <button onClick={() => setTime(index)} className="setTime-ms" style={{backgroundColor: "#cf1616",color:"white"}}>Đặt</button>
                 <button className="setTime-ms button-reset" style={{backgroundColor:"#7db921"}}>Reset Time</button>
