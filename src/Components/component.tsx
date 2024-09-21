@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { RxLapTimer } from "react-icons/rx";
 import { FaEdit } from "react-icons/fa";
@@ -9,12 +9,13 @@ interface listProps {
   list: string;
   checkTask: boolean;
   time: { minutes: number; seconds: number };
+  toggleShowSetTime: boolean,
+  togglePlay: boolean
 }
 
 function ListRender(): JSX.Element {
   const [lists, setLists] = useState<Array<listProps>>([]);
   const [inputValue, setInputValue] = useState<string>("");
-  const [showTime, setShowTime] = useState<boolean>(false);
 
   const changeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
@@ -28,7 +29,9 @@ function ListRender(): JSX.Element {
           {
             list: inputValue,
             checkTask: false,
-            time: { minutes: 0, seconds: 0 }
+            time: { minutes: 0, seconds: 0 },
+            toggleShowSetTime: false,
+            togglePlay: true
           },
         ]);
         setInputValue("");
@@ -50,8 +53,10 @@ function ListRender(): JSX.Element {
     setLists(updateTask);
   };
 
-  const showSetTime = () => {
-    setShowTime((pre) => !pre);
+  const showSetTime = (index:number) => {
+    const updateList = lists.slice();
+    updateList[index].toggleShowSetTime = ! updateList[index].toggleShowSetTime;
+    setLists(updateList);
   };
 
   const updateMinutes = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
@@ -72,10 +77,7 @@ function ListRender(): JSX.Element {
     setLists((preList) =>
       preList.map((task, i) => {
         if (i === index) {
-          return {
-            ...task,
-            time: { minutes: task.time.minutes, seconds: parseInt(e.target.value) },
-          };
+          return {...task, time: { minutes: task.time.minutes, seconds: parseInt(e.target.value) } };
         }
         return task;
       })
@@ -84,27 +86,32 @@ function ListRender(): JSX.Element {
 
   const setTime = (index: number) => {
     const intervalID = setInterval(() => {
-      setLists((prelists) => {
-        return prelists.map((task, i) => {
-          if (i === index) {
-            let { minutes, seconds } = task.time;
-            if (seconds > 0) {
-              seconds--;
-            } else if (minutes > 0) {
-              minutes--;
-              seconds = 59;
-            } else {
-              clearInterval(intervalID);
+        setLists((prelists) => {
+          return prelists.map((task, i) => {
+            if (i === index && task.togglePlay) {
+              let { minutes, seconds } = task.time;
+              if (seconds > 0) {
+                seconds--;
+              } else if (minutes > 0) {
+                minutes--;
+                seconds = 59;
+              } else {
+                clearInterval(intervalID);
+              }
+              return { ...task, time: { minutes, seconds } };
             }
-            return { ...task, time: { minutes, seconds } };
-          }
-          return task;
-        });
-      });
+            return task;
+          });
+        });   
     }, 1000);
-
-    setShowTime(pre => !pre);
+    showSetTime(index)
   };
+
+  const toggleControlPlay = (index: number) => {
+    setLists(preList => 
+      preList.map((list, i ) => i === index ? {...list , togglePlay: !list.togglePlay} : list)
+    )
+  }
  
 
   const editTask = () => {
@@ -146,8 +153,7 @@ function ListRender(): JSX.Element {
                 />
                 <span className="span-1">{value.list}</span>
                 <span className="span-2">{value.time.minutes < 10 ? `0${value.time.minutes}`: `${value.time.minutes}`}:{value.time.seconds < 10 ? `0${value.time.seconds}`: `${value.time.seconds}`}</span>
-                <button style={{width:"20px",height:"20px",borderRadius:"5px"}}><RiPauseMiniLine/></button>
-                <button style={{width:"20px",height:"20px",borderRadius:"5px",display:"none"}}><IoIosPlay/></button>
+                {value.togglePlay ?  <button title="Pause" onClick={() => toggleControlPlay(index)} className="button-Pause"><RiPauseMiniLine/></button> : <button title="Play" onClick={() => toggleControlPlay(index)} className="button-Play"><IoIosPlay/></button>}
               </div>
               <button
                 onClick={() => deleteTask(index)}
@@ -162,7 +168,7 @@ function ListRender(): JSX.Element {
                 <RiDeleteBin6Line />
               </button>
               <button
-                onClick={showSetTime}
+                onClick={() => showSetTime(index)}
                 style={{
                   color: "green",
                   backgroundColor: "#914c4c",
@@ -187,8 +193,8 @@ function ListRender(): JSX.Element {
               </button>
 
               <div
-                className="inputTime"
-                style={showTime ? { display: "flex" } : {}}
+                className="inputTime "
+                style={value.toggleShowSetTime ? { display: "flex" } : {}}
               >
                 <h1>Nhập thời gian</h1>
                 <div>
@@ -196,14 +202,14 @@ function ListRender(): JSX.Element {
                   <span style={{color:"white"}}>:</span>
                   <input type="number" placeholder="seconds" maxLength={2} onChange={(e) => updateSeconds(e,index)} className="input-ms"/>
                 </div>
-                <button onClick={() => setTime(index)} className="setTime-ms" style={{backgroundColor: "#cf1616",color:"white"}}>Đặt</button>
+                <button onClick={() => setTime(index)} className="setTime-ms" style={{backgroundColor: "#cf1616",color:"white"}}>Bắt đầu</button>
                 <button className="setTime-ms button-reset" style={{backgroundColor:"#7db921"}}>Reset Time</button>
               </div>
+              <div className="overlay" style={value.toggleShowSetTime ? {} : {display: "none"}} onClick={() => showSetTime(index)}></div>
             </li>
           );
         })}
       </ul>
-      <div className="overlay" style={showTime ? {} : {display: "none"}} onClick={() => setShowTime(pre => !pre)}></div>
     </div>
   );
 }

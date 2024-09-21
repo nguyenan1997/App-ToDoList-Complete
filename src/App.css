@@ -164,3 +164,19 @@
   right: 0;
   flex: 0;
 }
+
+.listTask li .propsTask .button-Play{
+  width: 20px;
+  height: 20px;
+  border-radius: 10px;
+  color: green;
+}
+
+.listTask li .propsTask .button-Pause{
+  width: 20px;
+  height: 20px;
+  border-radius: 10px;
+  background-color: #ffffff;
+  color: red;
+
+}
