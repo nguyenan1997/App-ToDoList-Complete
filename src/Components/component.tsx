@@ -12,7 +12,7 @@ interface listProps {
 function ListRender(): JSX.Element {
   const [lists, setLists] = useState<Array<listProps>>([]);
   const [inputValue, setInputValue] = useState<string>("");
-  const [countDownTime, setCountDownTime] = useState<{minutes: number; seconds: number}>({ minutes: 0, seconds: 0 });
+  const [countDownTime, setCountDownTime] = useState<{minutes: number, seconds: number}>({ minutes: 0, seconds: 0 });
   const [showTime, setShowTime] = useState<boolean>(false);
 
   const changeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -54,7 +54,7 @@ function ListRender(): JSX.Element {
   };
 
   const updateMinutes = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setCountDownTime({...countDownTime, minutes: parseInt(e.target.value) || 0})
+    setCountDownTime({...countDownTime, minutes: parseInt(e.target.value) || 0}) 
   }
 
   const updateSeconds = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -62,13 +62,28 @@ function ListRender(): JSX.Element {
   }
 
   const setTime = (index: number) => {
+    const intervalID = setInterval(() => {
+      setLists((prelists: any) => {
+        const updatedLists = [...prelists];
+        let {minutes, seconds} = updatedLists[index].timeLimits;
 
-    setShowTime(pre => !pre)
+        if(seconds > 0){
+          seconds--;
+        }
+        else if(minutes > 0){
+          minutes--;
+          seconds = 59;
+        }
+        else{
+          clearInterval(intervalID)
+        }
+        updatedLists[index].timeLimits = {minutes, seconds};
+        return updatedLists
+      })
+    }, 1000);
+    setShowTime(pre => !pre);
   };
-
-  useEffect(() => {
-    
-  },[])
+ 
 
   const editTask = () => {};
 
@@ -116,7 +131,7 @@ function ListRender(): JSX.Element {
                   borderRadius: "5px",
                 }}
                 className="buttonDelete"
-                title="Delete"
+                title="Xóa"
               >
                 <RiDeleteBin6Line />
               </button>
@@ -128,7 +143,7 @@ function ListRender(): JSX.Element {
                   borderRadius: "5px",
                 }}
                 className="buttonTime"
-                title="SetTime"
+                title="Hẹn giờ"
               >
                 <RxLapTimer />
               </button>
@@ -140,7 +155,7 @@ function ListRender(): JSX.Element {
                   borderRadius: "5px",
                 }}
                 className="buttonEdit"
-                title="Edit"
+                title="Sửa"
               >
                 <FaEdit />
               </button>
@@ -151,7 +166,7 @@ function ListRender(): JSX.Element {
               >
                 <h1>Nhập thời gian</h1>
                 <div>
-                  <input type="number" placeholder="minutes" onChange={updateMinutes} className="input-ms"/>
+                  <input type="number" placeholder="minutes" onChange={updateMinutes} className="input-ms" />
                   <span style={{color:"white"}}>:</span>
                   <input type="number" placeholder="seconds" maxLength={2} onChange={updateSeconds} className="input-ms"/>
                 </div>
