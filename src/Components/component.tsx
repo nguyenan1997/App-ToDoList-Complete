@@ -153,7 +153,11 @@ function ListRender(): JSX.Element {
                 />
                 <span className="span-1">{value.list}</span>
                 <span className="span-2">{value.time.minutes < 10 ? `0${value.time.minutes}`: `${value.time.minutes}`}:{value.time.seconds < 10 ? `0${value.time.seconds}`: `${value.time.seconds}`}</span>
-                {value.togglePlay ?  <button title="Pause" onClick={() => toggleControlPlay(index)} className="button-Pause"><RiPauseMiniLine/></button> : <button title="Play" onClick={() => toggleControlPlay(index)} className="button-Play"><IoIosPlay/></button>}
+                {value.togglePlay 
+                ?  
+                <button title="Pause" onClick={() => toggleControlPlay(index)} className="button-Pause"><RiPauseMiniLine/></button> 
+                : 
+                <button title="Play" onClick={() => toggleControlPlay(index)} className="button-Play"><IoIosPlay/></button>}
               </div>
               <button
                 onClick={() => deleteTask(index)}
