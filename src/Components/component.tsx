@@ -146,8 +146,8 @@ function ListRender(): JSX.Element {
                 />
                 <span className="span-1">{value.list}</span>
                 <span className="span-2">{value.time.minutes < 10 ? `0${value.time.minutes}`: `${value.time.minutes}`}:{value.time.seconds < 10 ? `0${value.time.seconds}`: `${value.time.seconds}`}</span>
-                <button style={{width:"18px",height:"18px",borderRadius:"5px"}}><RiPauseMiniLine/></button>
-                <button style={{width:"18px",height:"18px",borderRadius:"5px"}}><IoIosPlay/></button>
+                <button style={{width:"20px",height:"20px",borderRadius:"5px"}}><RiPauseMiniLine/></button>
+                <button style={{width:"20px",height:"20px",borderRadius:"5px",display:"none"}}><IoIosPlay/></button>
               </div>
               <button
                 onClick={() => deleteTask(index)}
