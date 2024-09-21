@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { RxLapTimer } from "react-icons/rx";
 import { FaEdit } from "react-icons/fa";
+import { RiPauseMiniLine } from "react-icons/ri";
+import { IoIosPlay } from "react-icons/io";
 
 interface listProps {
   list: string;
@@ -82,30 +84,32 @@ function ListRender(): JSX.Element {
 
   const setTime = (index: number) => {
     const intervalID = setInterval(() => {
-      setLists((prelists: any) => {
-        const updatedLists = [...prelists];
-        let {minutes, seconds} = updatedLists[index].time;
-
-        if(seconds > 0){
-          seconds--;
-        }
-        else if(minutes > 0){
-          minutes--;
-          seconds = 59;
-        }
-        else{
-          clearInterval(intervalID)
-        }
-        updatedLists[index].timeLimits = {minutes, seconds};
-        return updatedLists
-      })
+      setLists((prelists) => {
+        return prelists.map((task, i) => {
+          if (i === index) {
+            let { minutes, seconds } = task.time;
+            if (seconds > 0) {
+              seconds--;
+            } else if (minutes > 0) {
+              minutes--;
+              seconds = 59;
+            } else {
+              clearInterval(intervalID);
+            }
+            return { ...task, time: { minutes, seconds } };
+          }
+          return task;
+        });
+      });
     }, 1000);
 
     setShowTime(pre => !pre);
   };
  
 
-  const editTask = () => {};
+  const editTask = () => {
+
+  };
 
   return (
     <div className="container">
@@ -141,7 +145,9 @@ function ListRender(): JSX.Element {
                   onChange={() => toggleCheckTask(index)}
                 />
                 <span className="span-1">{value.list}</span>
-                <span className="span-2">{`${value.time.minutes}:${value.time.seconds}`}</span>
+                <span className="span-2">{value.time.minutes < 10 ? `0${value.time.minutes}`: `${value.time.minutes}`}:{value.time.seconds < 10 ? `0${value.time.seconds}`: `${value.time.seconds}`}</span>
+                <button style={{width:"18px",height:"18px",borderRadius:"5px"}}><RiPauseMiniLine/></button>
+                <button style={{width:"18px",height:"18px",borderRadius:"5px"}}><IoIosPlay/></button>
               </div>
               <button
                 onClick={() => deleteTask(index)}
