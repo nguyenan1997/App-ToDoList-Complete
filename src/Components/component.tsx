@@ -214,9 +214,10 @@ function ListRender(): JSX.Element {
               <div className="overlay" style={value.toggleShowSetTime ? {} : { display: "none" }} onClick={() => showSetTime(index)}></div>
 
               <div className="editTask" style={value.toggleEdit ? {} : {display: "none"}}>
+                <h1>Sửa tại đây</h1>
                 <input type="text" placeholder="Sửa nhiệm vụ tại đây" value={value.list}/>
               </div>
-              <div className="overlay" style={value.toggleShowSetTime ? {} : { display: "none" }} onClick={() => showSetTime(index)}></div>
+              <div className="overlay" style={(value.toggleShowSetTime) ? {} : { display: "none" }} onClick={() => showSetTime(index)}></div>
             </li>
           );
         })}

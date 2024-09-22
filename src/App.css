@@ -181,5 +181,23 @@
 }
 
 .editTask{
-  width: 500px;
+  display: flex;
+  flex-direction: column;
+  position: absolute; /* Đặt vị trí tuyệt đối */
+  top: 35%; /* Căn giữa theo chiều dọc */
+  left: 50%; /* Căn giữa theo chiều ngang */
+  transform: translate(
+    -50%,
+    -50%
+  ); /* Dịch chuyển ngược lại 50% để căn đúng giữa */
+  gap: 20px;
+  align-items: center;
+  border: 1px solid black;
+  width: 300px;
+  height: 300px;
+  border-radius: 20px;
+  background-color: rgb(44, 46, 48);
+  box-shadow: 0 20px 30px rgba(0, 0, 0, 0.5), /* Bóng chính mạnh và rõ */
+                0 10px 10px rgba(53, 52, 52, 0.2); /* Bóng phụ tạo hiệu ứng nổi bật */
+  z-index: 2;
 }
