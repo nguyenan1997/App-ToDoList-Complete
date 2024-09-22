@@ -10,7 +10,8 @@ interface listProps {
   checkTask: boolean;
   time: { minutes: number; seconds: number };
   toggleShowSetTime: boolean,
-  togglePlay: boolean
+  togglePlay: boolean,
+  toggleEdit: boolean,
 }
 
 function ListRender(): JSX.Element {
@@ -31,7 +32,8 @@ function ListRender(): JSX.Element {
             checkTask: false,
             time: { minutes: 0, seconds: 0 },
             toggleShowSetTime: false,
-            togglePlay: true
+            togglePlay: true,
+            toggleEdit: false
           },
         ]);
         setInputValue("");
@@ -113,10 +115,13 @@ function ListRender(): JSX.Element {
     )
   }
 
+  const changeToggleEditTask = (index: number) => {
+    setLists(preList => 
+      preList.map((task, i) => i === index ? {...task, toggleEdit: !task.toggleEdit} : task)
+    )
+  }
 
-  const editTask = () => {
-
-  };
+  
 
   return (
     <div className="container">
@@ -184,7 +189,7 @@ function ListRender(): JSX.Element {
                 <RxLapTimer />
               </button>
               <button
-                onClick={editTask}
+                onClick={() => changeToggleEditTask(index)}
                 style={{
                   color: "#34b575",
                   backgroundColor: "#364345",
@@ -208,8 +213,8 @@ function ListRender(): JSX.Element {
               </div>
               <div className="overlay" style={value.toggleShowSetTime ? {} : { display: "none" }} onClick={() => showSetTime(index)}></div>
 
-              <div className="editTask" style={value.toggleShowSetTime ? { display: "flex" } : {}}>
-                
+              <div className="editTask" style={value.toggleEdit ? {} : {display: "none"}}>
+                <input type="text" placeholder="Sửa nhiệm vụ tại đây" value={value.list}/>
               </div>
               <div className="overlay" style={value.toggleShowSetTime ? {} : { display: "none" }} onClick={() => showSetTime(index)}></div>
             </li>
