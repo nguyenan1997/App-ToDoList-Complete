@@ -53,9 +53,9 @@ function ListRender(): JSX.Element {
     setLists(updateTask);
   };
 
-  const showSetTime = (index:number) => {
+  const showSetTime = (index: number) => {
     const updateList = lists.slice();
-    updateList[index].toggleShowSetTime = ! updateList[index].toggleShowSetTime;
+    updateList[index].toggleShowSetTime = !updateList[index].toggleShowSetTime;
     setLists(updateList);
   };
 
@@ -73,11 +73,11 @@ function ListRender(): JSX.Element {
     );
   };
 
-  const updateSeconds = (e: React.ChangeEvent<HTMLInputElement>,index:number) => {
+  const updateSeconds = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
     setLists((preList) =>
       preList.map((task, i) => {
         if (i === index) {
-          return {...task, time: { minutes: task.time.minutes, seconds: parseInt(e.target.value) } };
+          return { ...task, time: { minutes: task.time.minutes, seconds: parseInt(e.target.value) } };
         }
         return task;
       })
@@ -86,33 +86,33 @@ function ListRender(): JSX.Element {
 
   const setTime = (index: number) => {
     const intervalID = setInterval(() => {
-        setLists((prelists) => {
-          return prelists.map((task, i) => {
-            if (i === index && task.togglePlay) {
-              let { minutes, seconds } = task.time;
-              if (seconds > 0) {
-                seconds--;
-              } else if (minutes > 0) {
-                minutes--;
-                seconds = 59;
-              } else {
-                clearInterval(intervalID);
-              }
-              return { ...task, time: { minutes, seconds } };
+      setLists((prelists) => {
+        return prelists.map((task, i) => {
+          if (i === index && task.togglePlay) {
+            let { minutes, seconds } = task.time;
+            if (seconds > 0) {
+              seconds--;
+            } else if (minutes > 0) {
+              minutes--;
+              seconds = 59;
+            } else {
+              clearInterval(intervalID);
             }
-            return task;
-          });
-        });   
+            return { ...task, time: { minutes, seconds } };
+          }
+          return task;
+        });
+      });
     }, 1000);
     showSetTime(index)
   };
 
   const toggleControlPlay = (index: number) => {
-    setLists(preList => 
-      preList.map((list, i ) => i === index ? {...list , togglePlay: !list.togglePlay} : list)
+    setLists(preList =>
+      preList.map((list, i) => i === index ? { ...list, togglePlay: !list.togglePlay } : list)
     )
   }
- 
+
 
   const editTask = () => {
 
@@ -140,9 +140,9 @@ function ListRender(): JSX.Element {
                 style={
                   value.checkTask
                     ? {
-                        backgroundColor: "rgb(31,80,123)",
-                        textDecoration: "line-through",
-                      }
+                      backgroundColor: "rgb(31,80,123)",
+                      textDecoration: "line-through",
+                    }
                     : {}
                 }
               >
@@ -152,12 +152,12 @@ function ListRender(): JSX.Element {
                   onChange={() => toggleCheckTask(index)}
                 />
                 <span className="span-1">{value.list}</span>
-                <span className="span-2">{value.time.minutes < 10 ? `0${value.time.minutes}`: `${value.time.minutes}`}:{value.time.seconds < 10 ? `0${value.time.seconds}`: `${value.time.seconds}`}</span>
-                {value.togglePlay 
-                ?  
-                <button title="Pause" onClick={() => toggleControlPlay(index)} className="button-Pause"><RiPauseMiniLine/></button> 
-                : 
-                <button title="Play" onClick={() => toggleControlPlay(index)} className="button-Play"><IoIosPlay/></button>}
+                <span className="span-2">{value.time.minutes < 10 ? `0${value.time.minutes}` : `${value.time.minutes}`}:{value.time.seconds < 10 ? `0${value.time.seconds}` : `${value.time.seconds}`}</span>
+                {value.togglePlay
+                  ?
+                  <button title="Pause" onClick={() => toggleControlPlay(index)} className="button-Pause"><RiPauseMiniLine /></button>
+                  :
+                  <button title="Play" onClick={() => toggleControlPlay(index)} className="button-Play"><IoIosPlay /></button>}
               </div>
               <button
                 onClick={() => deleteTask(index)}
@@ -196,20 +196,22 @@ function ListRender(): JSX.Element {
                 <FaEdit />
               </button>
 
-              <div
-                className="inputTime "
-                style={value.toggleShowSetTime ? { display: "flex" } : {}}
-              >
+              <div className="inputTime "style={value.toggleShowSetTime ? { display: "flex" } : {}}>
                 <h1>Nhập thời gian</h1>
                 <div>
-                  <input type="number" placeholder="minutes" onChange={(e) => updateMinutes(e,index)} className="input-ms" />
-                  <span style={{color:"white"}}>:</span>
-                  <input type="number" placeholder="seconds" maxLength={2} onChange={(e) => updateSeconds(e,index)} className="input-ms"/>
+                  <input type="number" placeholder="minutes" onChange={(e) => updateMinutes(e, index)} className="input-ms" />
+                  <span style={{ color: "white" }}>:</span>
+                  <input type="number" placeholder="seconds" maxLength={2} onChange={(e) => updateSeconds(e, index)} className="input-ms" />
                 </div>
-                <button onClick={() => setTime(index)} className="setTime-ms" style={{backgroundColor: "#cf1616",color:"white"}}>Bắt đầu</button>
-                <button className="setTime-ms button-reset" style={{backgroundColor:"#7db921"}}>Reset Time</button>
+                <button onClick={() => setTime(index)} className="setTime-ms" style={{ backgroundColor: "#cf1616", color: "white" }}>Bắt đầu</button>
+                <button className="setTime-ms button-reset" style={{ backgroundColor: "#7db921" }}>Reset Time</button>
               </div>
-              <div className="overlay" style={value.toggleShowSetTime ? {} : {display: "none"}} onClick={() => showSetTime(index)}></div>
+              <div className="overlay" style={value.toggleShowSetTime ? {} : { display: "none" }} onClick={() => showSetTime(index)}></div>
+
+              <div className="editTask" style={value.toggleShowSetTime ? { display: "flex" } : {}}>
+                
+              </div>
+              <div className="overlay" style={value.toggleShowSetTime ? {} : { display: "none" }} onClick={() => showSetTime(index)}></div>
             </li>
           );
         })}
