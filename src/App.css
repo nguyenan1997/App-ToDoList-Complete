@@ -165,6 +165,17 @@
   flex: 0;
 }
 
+.overlay-2{
+  position: absolute;
+  background-color: #3f1212;
+  opacity: 0.5;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  flex: 0;
+}
+
 .listTask li .propsTask .button-Play{
   width: 20px;
   height: 20px;

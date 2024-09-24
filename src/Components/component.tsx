@@ -218,6 +218,7 @@ function ListRender(): JSX.Element {
                 <input type="text" placeholder="Sửa nhiệm vụ tại đây" value={value.list}/>
               </div>
               <div className="overlay" style={(value.toggleShowSetTime) ? {} : { display: "none" }} onClick={() => showSetTime(index)}></div>
+              {value.toggleEdit ? <div className="overlay-2" style={(value.toggleEdit) ? {} : { display: "block" }}></div> : <div className="overlay-2" style={(value.toggleEdit) ? {} : { display: "none" }}></div>}
             </li>
           );
         })}
