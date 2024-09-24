@@ -50,16 +50,16 @@ function ListRender(): JSX.Element {
   };
 
   const deleteTask = (index: number) => {
-    const updateTask = lists.slice();
-    updateTask.splice(index, 1);
-    setLists(updateTask);
+    setLists(prevLists => prevLists.filter((_, i) => i !== index));
   };
 
   const showSetTime = (index: number) => {
-    const updateList = lists.slice();
-    updateList[index].toggleShowSetTime = !updateList[index].toggleShowSetTime;
-    setLists(updateList);
+    setLists(preTask => preTask.map((task, i) => i === index ? {...task , toggleShowSetTime: !task.toggleShowSetTime} : task))
   };
+
+  const showSetEdit = (index: number) => {
+    setLists(preList => preList.map((task,i) => i===index ? {...task, toggleEdit: !task.toggleEdit } : task))
+  }
 
   const updateMinutes = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
     setLists((preList) =>
@@ -120,6 +120,15 @@ function ListRender(): JSX.Element {
       preList.map((task, i) => i === index ? {...task, toggleEdit: !task.toggleEdit} : task)
     )
   }
+
+  const editTask = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
+    setLists(preList => preList.map((task, i) => i === index ? {...task, list: e.target.value} : task)) 
+  }
+
+  const resetTime = (index: number) => {
+    setLists(preTask => preTask.map((task, i) => i === index ? {...task, time: {minutes: 0, seconds: 0}} : task));
+
+  } 
 
   
 
@@ -204,20 +213,21 @@ function ListRender(): JSX.Element {
               <div className="inputTime "style={value.toggleShowSetTime ? { display: "flex" } : {}}>
                 <h1>Nhập thời gian</h1>
                 <div>
-                  <input type="number" placeholder="minutes" onChange={(e) => updateMinutes(e, index)} className="input-ms" />
+                  <input type="number" placeholder="minutes" onChange={(e) => updateMinutes(e, index)} className="input-ms"  value={value.time.minutes}/>
                   <span style={{ color: "white" }}>:</span>
-                  <input type="number" placeholder="seconds" maxLength={2} onChange={(e) => updateSeconds(e, index)} className="input-ms" />
+                  <input type="number" placeholder="seconds" maxLength={2} onChange={(e) => updateSeconds(e, index)} className="input-ms" value= {value.time.seconds}/>
                 </div>
                 <button onClick={() => setTime(index)} className="setTime-ms" style={{ backgroundColor: "#cf1616", color: "white" }}>Bắt đầu</button>
-                <button className="setTime-ms button-reset" style={{ backgroundColor: "#7db921" }}>Reset Time</button>
+                <button className="setTime-ms button-reset" style={{ backgroundColor: "#7db921" }} onClick={() => resetTime(index)}>Reset Time</button>
               </div>
               <div className="overlay" style={value.toggleShowSetTime ? {} : { display: "none" }} onClick={() => showSetTime(index)}></div>
 
               <div className="editTask" style={value.toggleEdit ? {} : {display: "none"}}>
-                <h1>Sửa tại đây</h1>
-                <input type="text" placeholder="Sửa nhiệm vụ tại đây" value={value.list}/>
+                <h1>Sửa công việc</h1>
+                <input type="text" value={value.list} style={{width: "90%", height:"50%", backgroundColor:"#171a17",padding:"10px" ,color: "white", outline:"none", borderRadius: "10px",border:"1px"}} onChange={(e) => editTask(index,e)}/>
+                <button style={{backgroundColor:"green", borderRadius:"10px", fontSize:"15px", color: "#fff"}}>OK</button>
               </div>
-              <div className="overlay" style={(value.toggleShowSetTime) ? {} : { display: "none" }} onClick={() => showSetTime(index)}></div>
+              <div className="overlay-2" style={(value.toggleEdit) ? {} : { display: "none" }} onClick={(e) => showSetEdit(index)}></div>
             </li>
           );
         })}
